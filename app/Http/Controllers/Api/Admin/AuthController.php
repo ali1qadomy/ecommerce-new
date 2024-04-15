@@ -21,23 +21,22 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-
         if ($validator->fails()) {
 
             $data = [
                 'message' => $validator->errors()
             ];
-            return $this->returnError('e001',$data);
-
+            return $this->returnError('e001', $data);
         }
         $credentials = request(['email', 'password']);
         $token = Auth::guard('admin-api')->attempt($credentials);
         if (!$token) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return $this->returnError('e001','unAuthrized');
         }
-        $admin = Auth::guard('admin-api')->user();
+        $admin = Auth::guard('admin-api')->user()->with('roles')->get();
         $admin->token = $token;
-        return $this->returnSuccess('s001','success login','admin',$admin);
+
+        return $this->returnSuccess('s001', 'success login', 'admin', $admin);
     }
 
     public function register(Request $request)
@@ -49,7 +48,7 @@ class AuthController extends Controller
             'email' => 'required|email',
         ]);
         if ($validator->fails()) {
-            return $this->returnError('E001',"'errors' => $validator->errors()");
+            return $this->returnError('E001', "$validator->errors()");
         }
 
 
@@ -67,22 +66,20 @@ class AuthController extends Controller
             }
         }
         $admin->roles()->attach($roleIds);
-        $admins=admins::where('id',$admin['id'])->with('roles')->get();
-        return $this->returnSuccess('s001','success registration','admin',$admins);
+        $data = admins::where('id', $admin['id'])->with('roles')->get();
+        return $this->returnSuccess('s001', 'success registration', 'admin', $data);
     }
     public function logout()
     {
         try {
 
             JWTAuth::parseToken()->invalidate();
-            return $this->returnSuccess('s001','User logged out successfully');
-
+            return $this->returnSuccess('s001', 'User logged out successfully');
         } catch (\Exception $e) {
-            return $this->return('e001','Failed to logout');
-
+            return $this->return('e001', 'Failed to logout');
         }
     }
-    public function resetPassword(Request $request){
-
+    public function resetPassword(Request $request)
+    {
     }
 }
