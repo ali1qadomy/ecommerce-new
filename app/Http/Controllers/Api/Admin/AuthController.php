@@ -31,9 +31,9 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
         $token = Auth::guard('admin-api')->attempt($credentials);
         if (!$token) {
-            return $this->returnError('e001','unAuthrized');
+            return $this->returnError('e001', 'unAuthrized');
         }
-        $admin = Auth::guard('admin-api')->user()->with('roles')->get();
+        $admin = Auth::guard('admin-api')->user()->with('roles')->first();
         $admin->token = $token;
 
         return $this->returnSuccess('s001', 'success login', 'admin', $admin);
@@ -50,8 +50,6 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return $this->returnError('E001', "$validator->errors()");
         }
-
-
         $admin = new admins();
         $admin->username = $request->username;
         $admin->email = $request->email;

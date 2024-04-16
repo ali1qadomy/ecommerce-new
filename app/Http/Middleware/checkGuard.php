@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Middleware;
-
+use App\Trait\GeneralTraits;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +18,8 @@ class checkGuard
      */
     public function handle(Request $request, Closure $next,$quard=null): Response
     {
+
+
         if($quard != null)
         {
             auth()->shouldUse($quard);
@@ -27,14 +29,14 @@ class checkGuard
                 $user = JWTAuth::parseToken()->authenticate();
                         } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $th) {
                 return response()->json([
-                    'status'=>'100',
+                    'status'=>'e001',
                     'message'=>'unauthrized'
                 ]);
             }catch(JWTException $e)
             {
                 return response()->json([
-                    'staus'=>'100',
-                    'message'=>$e->getMessage()
+                    'staus'=>'e001',
+                    'message'=>'unauthrized'
                 ]);
             }
         }

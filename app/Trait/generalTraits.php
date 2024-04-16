@@ -6,7 +6,7 @@ trait GeneralTraits{
     public function returnError($errNum,$msg){
         return response()->json([
             'status'=>'false',
-            'message'=>$msg,
+            'response'=>$msg,
             'errorNum'=>$errNum
         ],400);
     }

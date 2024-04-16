@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('category', function (Blueprint $table) {
             $table->id();
-            $table->String('name_en');
-            $table->String('name_ar');
-            $table->String('brief_en');
-            $table->String('brief_ar');
+            $table->String('category_name_en')->unique();
+            $table->String('category_name_ar')->unique();
+            $table->integer('parent');
+            $table->boolean('active')->default(0);
             $table->timestamps();
         });
     }
