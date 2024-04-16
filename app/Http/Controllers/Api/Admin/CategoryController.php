@@ -16,7 +16,7 @@ class CategoryController extends Controller
     {
         try {
             $category  = new category();
-            $data = $category->getCategories(app()->getLocale());
+            $data = $category->getCategories(app()->getLocale())->paginate(10);
             return $this->returnSuccess('s001', 'retrive data successfully', 'data', $data);
         } catch (\Throwable $th) {
 
@@ -38,7 +38,7 @@ class CategoryController extends Controller
 
         try {
             $category  = new category();
-            $data = $category->getCategories(app()->getLocale(), ['id' => $request->id]);
+            $data = $category->getCategories(app()->getLocale(), ['id' => $request->id])->first();
 
             return $this->returnSuccess('s001', 'retrive data successfully', 'data', $data);
         } catch (\Throwable $th) {

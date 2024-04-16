@@ -20,7 +20,7 @@ class category extends Model
                 $query->where($column, $value);
             }
         }
-        return $query->paginate(10);
+        return $query;
     }
 
 }
