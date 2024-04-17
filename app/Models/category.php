@@ -10,7 +10,7 @@ class category extends Model
     use HasFactory;
     protected $table = 'category';
 
-    protected $fillable=['category_name_en','category_name_ar','parent','active'];
+    protected $fillable=['category_name_en','category_name_ar','active'];
 
     public function getCategories($locale, $conditions = [])
     {
@@ -21,6 +21,15 @@ class category extends Model
             }
         }
         return $query;
+    }
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent');
     }
 
 }

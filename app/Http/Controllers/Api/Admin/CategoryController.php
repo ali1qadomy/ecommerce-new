@@ -15,9 +15,11 @@ class CategoryController extends Controller
     public function index()
     {
         try {
-            $category  = new category();
-            $data = $category->getCategories(app()->getLocale())->paginate(10);
-            return $this->returnSuccess('s001', 'retrive data successfully', 'data', $data);
+
+            $categories = Category::with('children')->whereNull('parent')->get();
+
+
+            return $this->returnSuccess('s001', 'retrive data successfully', 'data', $categories);
         } catch (\Throwable $th) {
 
             return $this->returnError('e001', $th->getMessage());
@@ -63,7 +65,7 @@ class CategoryController extends Controller
             $data = category::Create([
                 'category_name_en' => $request->category_name_en,
                 'category_name_ar' => $request->category_name_en,
-                'parent' => $request->parent ?? 0,
+                'parent' => $request->parent ,
                 'active' => $request->active,
             ]);
 

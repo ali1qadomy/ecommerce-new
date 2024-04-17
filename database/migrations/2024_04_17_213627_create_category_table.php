@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('category', function (Blueprint $table) {
             $table->id();
-            $table->String('category_name_en')->unique();
-            $table->String('category_name_ar')->unique();
-            $table->integer('parent');
-            $table->boolean('active')->default(0);
+            $table->string('category_name_en')->unique();
+            $table->string('category_name_ar')->unique();
+            $table->unsignedBigInteger('parent')->nullable();
+            $table->boolean('active')->default(true);
+            $table->foreign('parent')->references('id')->on('category')->onDelete('cascade');
             $table->timestamps();
         });
     }

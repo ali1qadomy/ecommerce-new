@@ -19,7 +19,7 @@ class categoryFactory extends Factory
         return [
             'category_name_en'=>fake()->name(),
             'category_name_ar'=>fake()->name(),
-            'parent'=>fake()->randomNumber([0,1]),
+
             'active'=>fake()->boolean(),
         ];
     }
