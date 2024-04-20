@@ -16,8 +16,7 @@ class CategoryController extends Controller
     {
         try {
 
-            $categories = Category::with('children')->whereNull('parent')->get();
-
+            $categories = Category::with('children')->select('id', 'category_name_' . app()->getLocale() . ' AS name', 'parent', 'active')->whereNull('parent')->paginate(10);
 
             return $this->returnSuccess('s001', 'retrive data successfully', 'data', $categories);
         } catch (\Throwable $th) {
@@ -90,7 +89,6 @@ class CategoryController extends Controller
         }
         try {
             $data = category::find($request->id);
-            $data = new category();
             $data->category_name_en = $request->category_name_en;
             $data->category_name_ar = $request->category_name_ar;
             $data->parent = $request->parent;
