@@ -4,9 +4,11 @@ namespace App\Http\Controllers\api\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\category;
+use App\Models\image;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Trait\GeneralTraits;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class ProductController extends Controller
@@ -50,13 +52,14 @@ class ProductController extends Controller
 
 
     public function store(Request $request){
+        return $request->image_url;
         $validator = Validator::make($request->all(), [
             'name_en' => 'required',
             'name_ar' => 'required',
             'description_en' => 'required',
             'description_ar' => 'required',
             'category_id'=>'required',
-            'image_url'=>'required',
+            'image_url'=>'required|file',
             'active'=>'required'
         ]);
 
@@ -65,16 +68,26 @@ class ProductController extends Controller
             return $this->returnError('e001', $validator->errors());
         }
         try {
-
+            $product_image="";
+            if($request->file('image_url'))
+            {
+                $image_name=$request->file('image_url')->getClientOriginalName();
+                $path=$request->file('image_url')->storeAs('product',$image_name);
+                $product_image = "https://www.cfc.sa".Storage::url($path);
+            }
             $product=Product::create([
                 'name_en' => $request->name_en,
                 'name_ar' => $request->name_ar,
                 'description_en' => $request->description_en,
                 'description_ar' => $request->description_ar,
                 'category_id'=>$request->category_id,
-                'image_url'=>$request->image_url,
+                'image_url'=>$product_image,
                 'active'=>$request->active,
             ]);
+
+            $product->image()->create(['url'=>$product_image]);
+
+
             if ($product) {
                 return $this->returnSuccess('s001', 'Retrive Successfully', 'result', $product);
             }
@@ -110,6 +123,7 @@ class ProductController extends Controller
             $data->image_url = $request->image_url;
             $data->active = $request->active;
             $data->save();
+
             if ($data) {
                 return $this->returnSuccess('s001', 'update Successfully', 'result', $data);
             }
