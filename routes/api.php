@@ -57,6 +57,8 @@ Route::group(['middleware::api'],function(){
     Route::group(['prefix'=>'product'],function(){
         Route::get('/',[ProductController::class,'index'])->middleware('lang');
         Route::get('/details',[ProductController::class,'GetProductId'])->middleware('lang');
+        Route::get('/category',[ProductController::class,'category'])->middleware('lang');
+
         Route::post('/store',[ProductController::class,'store']);
         Route::post('/update',[ProductController::class,'update']);
         Route::post('/delete',[ProductController::class,'delete']);

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\api\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\category;
-use App\Models\image;
+
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Trait\GeneralTraits;
@@ -25,6 +25,21 @@ class ProductController extends Controller
             }
             return $this->returnError('e001', 'failed retrive data');
         } catch (\Throwable $th) {
+            return $this->returnError('e001', $th->getMessage());
+        }
+    }
+
+
+
+    public function category()
+    {
+        try {
+
+            $categories = Category::with('children')->select('id', 'category_name_' . app()->getLocale() . ' AS name', 'parent', 'active')->get();
+
+            return $this->returnSuccess('s001', 'retrive data successfully', 'data', $categories);
+        } catch (\Throwable $th) {
+
             return $this->returnError('e001', $th->getMessage());
         }
     }
@@ -52,7 +67,6 @@ class ProductController extends Controller
 
 
     public function store(Request $request){
-        return $request->image_url;
         $validator = Validator::make($request->all(), [
             'name_en' => 'required',
             'name_ar' => 'required',
@@ -85,12 +99,11 @@ class ProductController extends Controller
                 'active'=>$request->active,
             ]);
 
-            $product->image()->create(['url'=>$product_image]);
+            // $product->image()->create(['url'=>$product_image]);
 
 
-            if ($product) {
                 return $this->returnSuccess('s001', 'Retrive Successfully', 'result', $product);
-            }
+            
             return $this->returnError('e001', 'failed retrive data');
         } catch (\Throwable $th) {
             return $this->returnError('e001', $th->getMessage());
